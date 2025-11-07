@@ -1,0 +1,66 @@
+{% extends "templates/web.html" %}
+{% block page_content %}
+
+<div class="container mt-4">
+  <h2>Business Dashboard</h2>
+  <p>Welcome, {{ frappe.session.user }}!</p>
+
+  <hr>
+
+  <h4>Pending Appointments</h4>
+  <div id="appointments"></div>
+
+  <h4 class="mt-5">Staff Members</h4>
+  <div id="staff"></div>
+</div>
+
+<script>
+frappe.ready(() => {
+  // Fetch pending appointments
+  frappe.call({
+    method: "appointment_system.appointment_system.api.get_business_dashboard_data",
+    callback: (r) => {
+      if (!r.message) return;
+      const { appointments, staff } = r.message;
+
+      // Show appointments
+      let aHtml = "<ul>";
+      appointments.forEach(a => {
+        aHtml += `
+          <li>
+            ${a.customer_name || a.customer} - ${a.service} at ${a.appointment_time}
+            [<a href="#" onclick="approve('${a.name}')">Approve</a> |
+             <a href="#" onclick="reject('${a.name}')">Reject</a>]
+          </li>`;
+      });
+      aHtml += "</ul>";
+      $("#appointments").html(aHtml);
+
+      // Show staff
+      let sHtml = "<ul>";
+      staff.forEach(s => sHtml += `<li>${s.name}</li>`);
+      sHtml += "</ul>";
+      $("#staff").html(sHtml);
+    }
+  });
+});
+
+// Approve/Reject actions
+function approve(name) {
+  frappe.call({
+    method: "appointment_system.appointment_system.api.update_appointment_status",
+    args: { name, status: "Confirmed" },
+    callback: () => frappe.show_alert("Appointment Confirmed")
+  });
+}
+
+function reject(name) {
+  frappe.call({
+    method: "appointment_system.appointment_system.api.update_appointment_status",
+    args: { name, status: "Rejected" },
+    callback: () => frappe.show_alert("Appointment Rejected")
+  });
+}
+</script>
+
+{% endblock %}
