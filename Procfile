@@ -1,3 +1,11 @@
+#!/bin/bash
+# start.sh — run the Frappe site
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Migrate and start server
+bench start
 
 redis_cache: redis-server config/redis_cache.conf
 redis_queue: redis-server config/redis_queue.conf
