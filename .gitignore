@@ -1,0 +1,21 @@
+# Frappe & Bench
+sites/*/private/
+sites/*/public/files/
+sites/*/locks/
+sites/*/logs/
+sites/*/backups/
+sites/assets/
+assets/
+node_modules/
+env/
+__pycache__/
+*.pyc
+*.log
+*.swp
+*.swo
+*.sqlite
+*.db
+*.zip
+*.tar.gz
+*.DS_Store
+bench.log
